@@ -1,3 +1,9 @@
+<?php 
+
+    require_once('confirmaAcesso.php');
+    confAccess();
+
+?>
 <html>
     <head>
         <meta charset="utf-8" />
@@ -9,15 +15,17 @@
         <script src="main.js"></script>
     </head>
     <body>
+    <div class="text-center">
         <div class="container col-md-8">
             <h1>Editar Cadastro do Local</h1>
             <form id="frmNovoEstagiario" nome="frmNovoEstagiario" method="POST" action="local.php">
-                <div class="form-group">
+                <div class="text-center">
                         <label for = "lblLocal">Local</label>
                         <?php
-                            echo "<input class='form-control col-md-6' type='text' name='txtUpPredio' value='{$_POST['predio']}'>";
+                            echo "<input class='col-md-6' type='text' name='txtUpPredio' value='{$_POST['predio']}'>";
                             echo "<input type='hidden' name='upId' value='{$_POST['id']}'>";
                         ?>
+                        
                 </div>
                 <input type="submit" id="btEnviar" name ="btEnviar" 
                        class="btn btn-success" value="Gravar">

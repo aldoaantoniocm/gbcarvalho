@@ -1,53 +1,107 @@
 <?php
-    $conexao = mysqli_connect("localhost","wadoryu","57641971");
-    if (!$conexao){
-        echo "Erro ao se conectar ao MySQL <br/>";
-        exit;
+
+    require_once('confirmaAcesso.php');
+    require_once('conexao.php');
+    confAccess();
+
+    $select = "";
+    $cont = 0;
+    if(!empty($_POST['txtId'])){
+            $selectId = "SELECT c.id, c.patri_maq, c.data_entrada, c.data_saida, c.defeito, c.reparo, e.nome, l.predio
+            FROM conserto c
+            INNER JOIN estagiario e on c.est_resp = e.id
+            INNER JOIN local l on c.local = l.id WHERE c.id = '{$_POST['txtId']}'";
+            $select = $selectId;
+            $cont += 1;
     }
-    $nome_banco = "manutencao";
-    $banco = mysqli_select_db($conexao,$nome_banco);
-    if (!$banco){
-        echo "Erro ao se conectar ao banco manutencao...";
-        exit;
+    if(!empty($_POST['txtMaq'])){
+        if($cont > 0){
+            $selectMac = " AND c.patri_maq = '{$_POST['txtMaq']}'";
+            $select .= $selectMac;
+            $cont += 1;
+        }else{
+            $selectMac = "SELECT c.id, c.patri_maq, c.data_entrada, c.data_saida, c.defeito, c.reparo, e.nome, l.predio
+            FROM conserto c
+            INNER JOIN estagiario e on c.est_resp = e.id
+            INNER JOIN local l on c.local = l.id WHERE c.patri_maq = '{$_POST['txtMaq']}'";
+            $select .= $selectMac;
+            $cont += 1;
+        }
     }
-    if(isset($_POST['btRelTotal']) || empty($_POST['txtChave'])){
-        $sql_relTotal = "SELECT c.id, c.patri_maq, c.data_entrada, c.data_saida, c.defeito, c.reparo, e.nome, l.predio
+    if(!empty($_POST['cbLocal'])){
+        if($cont > 0){
+        $selectLocal = " AND c.local = '{$_POST['cbLocal']}'";
+            $select .= $selectLocal;
+            $cont += 1; 
+        }else{
+            $selectLocal = "SELECT c.id, c.patri_maq, c.data_entrada, c.data_saida, c.defeito, c.reparo, e.nome, l.predio
+            FROM conserto c
+            INNER JOIN estagiario e on c.est_resp = e.id
+            INNER JOIN local l on c.local = l.id WHERE c.local = '{$_POST['cbLocal']}'";
+            $select .= $selectLocal;
+            $cont += 1;
+        }   
+    }
+    if(!empty($_POST['cbEst'])){
+        if($cont > 0){
+        $selectEst = " AND c.est_resp = '{$_POST['cbEst']}'";
+            $select .= $selectEst;
+            $cont += 1; 
+        }else{
+            $selectEst = "SELECT c.id, c.patri_maq, c.data_entrada, c.data_saida, c.defeito, c.reparo, e.nome, l.predio
+            FROM conserto c
+            INNER JOIN estagiario e on c.est_resp = e.id
+            INNER JOIN local l on c.local = l.id WHERE c.est_resp = '{$_POST['cbEst']}'";
+            $select .= $selectEst;
+            $cont += 1;
+        }   
+    }
+    if(!empty($_POST['txtDataEnt'])){
+        $var = inverteData($_POST['txtDataEnt']);        
+        if($cont > 0){
+            $selectDataEnt = " AND c.data_entrada = '{$var}'";
+            $select .= $selectDataEnt;
+            $cont += 1; 
+        }else{
+            $selectDataEnt = "SELECT c.id, c.patri_maq, c.data_entrada, c.data_saida, c.defeito, c.reparo, e.nome, l.predio
+            FROM conserto c
+            INNER JOIN estagiario e on c.est_resp = e.id
+            INNER JOIN local l on c.local = l.id WHERE c.data_entrada = '{$var}'";
+            $select .= $selectDataEnt;
+            $cont += 1;
+        }   
+    }
+    if(!empty($_POST['txtDataSai'])){
+        $var = inverteData($_POST['txtDataSai']);
+        if($cont > 0){
+        $selectDataSai = " AND c.data_saida = '{$var}'";
+            $select .= $selectDataSai;
+            $cont += 1; 
+        }else{
+            $selectDataSai = "SELECT c.id, c.patri_maq, c.data_entrada, c.data_saida, c.defeito, c.reparo, e.nome, l.predio
+            FROM conserto c
+            INNER JOIN estagiario e on c.est_resp = e.id
+            INNER JOIN local l on c.local = l.id WHERE c.data_saida = '{$var}'";
+            $select .= $selectDataSai;
+            $cont += 1;
+        }   
+    }
+    if($cont > 0){
+        $select .= " ORDER BY c.id;";
+        $rs = mysqli_query($conexao, $select);
+    }else{
+        $selectTotal = "SELECT c.id, c.patri_maq, c.data_entrada, c.data_saida, c.defeito, c.reparo, e.nome, l.predio
                 FROM conserto c
                 INNER JOIN estagiario e on c.est_resp = e.id
                 INNER JOIN local l on c.local = l.id ORDER BY c.id;";
-        $selectRelTotal = mysqli_query($conexao, $sql_relTotal);
-        $rs = $selectRelTotal;
+        $rs = mysqli_query($conexao, $selectTotal);
     }
 
-    if(isset($_POST['btRelMaq'])){
-        $sql_relMaq = "SELECT c.id, c.patri_maq, c.data_entrada, c.data_saida, c.defeito, c.reparo, e.nome, l.predio 
-        FROM conserto c
-        INNER JOIN estagiario e on c.est_resp = e.id
-        INNER JOIN local l on c.local = l.id 
-        WHERE c.patri_maq = {$_POST['txtChave']} ORDER BY c.id ;";
-        $selectRelMaq = mysqli_query($conexao, $sql_relMaq);
-        $rs = $selectRelMaq;
-    }
+    $comboLocal = "SELECT * FROM local;";
+    $sql_comboLocal = mysqli_query($conexao, $comboLocal);
 
-    if(isset($_POST['btRelPredio'])){
-        $sql_relPredio = "SELECT c.id, c.patri_maq, c.data_entrada, c.data_saida, c.defeito, c.reparo, e.nome, l.predio 
-        FROM conserto c
-        INNER JOIN estagiario e on c.est_resp = e.id
-        INNER JOIN local l on c.local = l.id 
-        WHERE l.id = {$_POST['txtChave']} ORDER BY c.id ;"; 
-        $selectRelPredio = mysqli_query($conexao, $sql_relPredio);
-        $rs = $selectRelPredio;
-    }
-
-    if(isset($_POST['btRelEst'])){
-        $sql_relEst = "SELECT c.id, c.patri_maq, c.data_entrada, c.data_saida, c.defeito, c.reparo, e.nome, l.predio 
-        FROM conserto c
-        INNER JOIN estagiario e on c.est_resp = e.id
-        INNER JOIN local l on c.local = l.id 
-        WHERE e.id = {$_POST['txtChave']} ORDER BY c.id ;";
-        $selectRelEst = mysqli_query($conexao, $sql_relEst);
-        $rs = $selectRelEst;
-    }
+    $comboEstagiario = "SELECT * FROM estagiario WHERE status = 1;";
+    $sql_comboEstagiario = mysqli_query($conexao, $comboEstagiario);
 
     function inverteData($data){
         if(count(explode("/",$data)) > 1){
@@ -56,6 +110,8 @@
             return implode("/",array_reverse(explode("-",$data)));
         }
     }
+
+    
 ?>
 
 <html>
@@ -69,28 +125,69 @@
     <script src="main.js"></script>
 </head>
 <body>
-    <h1>Relatórios<h1>
+    <div class="text-center">
+        <h1>Relatórios<h1>
+    </div>
+    <div class="container">
+    <form class=text-left> 
         <input type="button" id="btVoltar" name ="btVoltar" 
                class="btn btn-warning" value="Voltar"
                onclick="javascript:location.href='conserto.php'">
-        
-        <form method="POST" action="historico.php">
-        <label for = "lblChave">Chave de busca</label>
-        <input class="form-control col-md-3" type="text" 
-            name = "txtChave" placeholder="Informe a chave que deseja pesquisar">
-            <input type="submit" id="btAd" name ="btRelTotal" 
-               class="btn btn-primary" value="Relatório Total">
-            <input type="submit" id="btAd" name ="btRelMaq" 
-               class="btn btn-primary" value="Relatório por Máquina">
-            <input type="submit" id="btAd" name ="btRelPredio" 
-               class="btn btn-primary" value="Relatório por Prédio">
-            <input type="submit" id="btAd" name ="btRelEst" 
-               class="btn btn-primary" value="Relatório por Estagiário">
         </form>
+        <br>
+               <form method="POST" action="historico.php">
+            <div class="form-row">
+                <div class="col">
+                    <h6>ID</h6>
+                    <input class="form-control col-md-9" type="text" 
+                        name = "txtId" placeholder="ID">    
+                </div>
+                <div class="col">
+                    <h6>Máquina</h6>
+                    <input class="form-control col-md-9" type="text" 
+                        name = "txtMaq" placeholder="Patrimônio">    
+                </div>
+                <div class="col">
+                    <h6>Local</h6>
 
-               <div style="overflow: auto; width: 100%; height: 400px; border:solid 1px">
-        <table class="table">
-        <thead class="thead-dark">
+                    <select name="cbLocal" class="form-control col-md-9">
+                                <option></option>
+                            <?php while($dado = mysqli_fetch_assoc($sql_comboLocal)){ ?>
+                                <option value="<?php echo $dado['id'];?>"><?php echo $dado['predio']; ?></option>
+                            <?php }?>
+                        </select>
+                      
+                </div>
+                <div class="col">
+                    <h6>Estagiário</h6>
+                    <select name="cbEst" class="form-control col-md-9"  placeholder="Patrimônio">
+                                <option></option>
+                            <?php while($dado = mysqli_fetch_assoc($sql_comboEstagiario)){ ?>
+                                <option value="<?php echo $dado['id'];?>"><?php echo $dado['nome']; ?></option>
+                            <?php }?>
+                        </select>    
+                </div>
+                <div class="col">
+                    <h6>Data de Entrada</h6>
+                    <input class="form-control col-md-9" type="text" 
+                        name = "txtDataEnt" placeholder="Entrada">    
+                </div>
+                <div class="col">
+                    <h6>Data de Saída</h6>
+                    <input class="form-control col-md-9" type="text" 
+                        name = "txtDataSai" placeholder="Saída">    
+                </div>
+            </div>
+            <br>
+            <div class="text-center">
+            <input type="submit" id="btAd" name ="btRelTotal" 
+               class="btn btn-primary" value="Gerar Relatório">
+               </div>
+        </form>
+               
+
+            <div style="overflow: auto; width: 100%; height: 400px; border:solid 1px">
+            <table class="table table-sm table-striped">
             <tr>    
                 <th>ID</th>
                 <th>Patrimônio</th>

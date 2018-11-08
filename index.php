@@ -1,15 +1,6 @@
 <?php
- $conexao = mysqli_connect("localhost","wadoryu","57641971");
- if (!$conexao){
-     echo "Erro ao se conectar ao MySQL <br/>";
-     exit;
- }
- $nome_banco = "manutencao";
- $banco = mysqli_select_db($conexao,$nome_banco);
- if (!$banco){
-     echo "Erro ao se conectar ao banco manutencao...";
-     exit;
- }
+require_once('conexao.php');
+
 session_start();
 if (isset($_SESSION['login'])) {	
 	$_SESSION['login'] = 'N';
@@ -22,7 +13,9 @@ if (isset($_POST['btnGravar'])) {
 	if (mysqli_num_rows($query) > 0)  {
 		$_SESSION['login'] = 'S';
 		$_SESSION['usuario'] = mysqli_fetch_assoc($query);
+		//$_SESSION['autentica'] = true;
 		header('Location: conserto.php');
+		
 	} else {
 		echo "<script> alert('Usuário ou Senha invalido.'); </script>";
 	}
@@ -37,19 +30,29 @@ if (isset($_POST['btnGravar'])) {
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
 	<script type="text/javascript" src="js/validacao.js" charset="iso-8859-1"></script>
 </head>
-<body class="login-body">
-
-<form method="POST" action="" id="frmDados" name="frmDados">
-	<fieldset>
+<body class="text-center">
+<div class="container col-sm-4">
+<form class="form-signin" method="POST" action="" id="frmDados" name="frmDados">
+	<fieldset class="text-center">
+	<br>
 		<h1>Bem Vindo</h1>
 		<label>Usuário</label>
-		<input type="text" name="txtUsuario" id="txtUsuario" value="<?php echo (isset($_POST['txtUsuario'])) ? $_POST['txtUsuario'] : ''; ?>">	
+		<input type="text" name="txtUsuario" id="txtUsuario" class="form-control" placeholder="Usuário" required="" 
+			autofocus="" value="<?php echo (isset($_POST['txtUsuario'])) ? $_POST['txtUsuario'] : ''; ?>">	
 		<label>Senha</label>
-		<input type="password" name="txtSenha" id="txtSenha" value="<?php echo (isset($_POST['txtSenha'])) ? $_POST['txtSenha'] : ''; ?>">
-		<input type="submit" name="btnGravar" id="btnGravar" value="Entrar" onclick="return validaCampo();">
-		<label id="lbl-conta"><a href="http://localhost/trabalho/conta.php">Criar uma conta</a></label>
+		<input type="password" name="txtSenha" id="txtSenha" class="form-control" placeholder="Password" required="" 
+			value="<?php echo (isset($_POST['txtSenha'])) ? $_POST['txtSenha'] : ''; ?>">
+			<br>
+		<input class="btn btn-lg btn-primary btn-block" type="submit" name="btnGravar" 
+			id="btnGravar" value="Entrar" onclick="return validaCampo();">
+		<input class="btn btn-lg btn btn-info btn-block" id="lbl-conta" value="Criar uma conta"
+			onclick="javascript:location.href='conta.php'">
+
 	</fieldset>
+	
+      <p class="mt-5 mb-3 text-muted">© 2018-2018</p>
 </form>
+</div>
 
 </body>
 </html>

@@ -1,15 +1,8 @@
 <?php
-    $conexao = mysqli_connect("localhost","wadoryu","57641971");
-    if (!$conexao){
-        echo "Erro ao se conectar ao MySQL <br/>";
-        exit;
-    }
-    $nome_banco = "manutencao";
-    $banco = mysqli_select_db($conexao,$nome_banco);
-    if (!$banco){
-        echo "Erro ao se conectar ao banco manutencao...";
-        exit;
-    }
+
+    require_once('confirmaAcesso.php');
+    require_once('conexao.php');
+    confAccess();
 
     if(isset($_POST['txtPredio'])){
         $sql_insert = "INSERT INTO local (predio) VALUES ('{$_POST['txtPredio']}');";
@@ -46,14 +39,18 @@
     <script src="main.js"></script>
 </head>
 <body>
+<div class="text-center">
     <h1>Local<h1>
+    </div>
+    <div class="container">
         <input type="button" id="btVoltar" name ="btVoltar" 
                class="btn btn-warning" value="Voltar"
                onclick="javascript:location.href='conserto.php'">
-        <br><br>
-    <div style="overflow: auto; width: 100%; height: 200px; border:solid 1px">
-        <table class="table">
-        <thead class="thead-dark">
+               </div>
+        <br>
+        <div class="container">
+    <div style="overflow: auto; width: 100%; height: 300px; border:solid 1px">
+        <table class="table table-sm table-striped">
             <tr>    
                 <th colspan=13>Prédio</th>
             </tr>
@@ -90,13 +87,13 @@
             }?>
             </table>
         </div>
-        
-        <div class="container col-md-8">
+        <br>
+        <div class="text-center">
             <h1>Cadastrar novo local</h1>
             <form id="frmNovoEstagiario" nome="frmNovoEstagiario" method="POST" action="local.php">
                 <div class="form-group">
-                        <label for = "lblLocal">Local</label>
-                        <input class="form-control col-md-6" type="text" 
+                        <label class="col-md-1" for = "lblLocal">Local</label>
+                        <input class="text-center col-md-4" type="text" 
                                name = "txtPredio" placeholder="Informe o nome do local">
                 </div>
                 <input type="submit" id="btEnviar" name ="btEnviar" 

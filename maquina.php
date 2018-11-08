@@ -1,15 +1,9 @@
 <?php
-    $conexao = mysqli_connect("localhost","wadoryu","57641971");
-    if (!$conexao){
-        echo "Erro ao se conectar ao MySQL <br/>";
-        exit;
-    }
-    $nome_banco = "manutencao";
-    $banco = mysqli_select_db($conexao,$nome_banco);
-    if (!$banco){
-        echo "Erro ao se conectar ao banco manutencao...";
-        exit;
-    }
+
+    require_once('confirmaAcesso.php');
+    require_once('conexao.php');
+    confAccess();
+
     if(isset($_POST['txtProcessador']) || isset($_POST['txtMemRam']) || isset($_POST['txtMemRam']) || isset($_POST['txtHd']) || isset($_POST['txtHd'])){
         $sql_insert = "INSERT INTO maquina (patrimonio, processador, mem_ram, hd, mac) 
         VALUES ('{$_POST['txtPatrimonio']}', '{$_POST['txtProcessador']}', '{$_POST['txtMemRam']}', '{$_POST['txtHd']}','{$_POST['txtMac']}');";
@@ -48,14 +42,23 @@
     <script src="main.js"></script>
 </head>
 <body>
+<div class="text-center">
     <h1>Máquinas<h1>
+    </div>
+    <div class="container">
         <input type="button" id="btVoltar" name ="btVoltar" 
                class="btn btn-warning" value="Voltar"
                onclick="javascript:location.href='conserto.php'">
+               </div>
+               <div class="text-center">
+        <input type="button" id="btAd" name ="btRelatorio" 
+               class="btn btn-primary" value="Relatórios"
+               onclick="javascript:location.href='historicoMaq.php'">
+               </div>
         <br><br>
-        <div style="overflow: auto; width: 100%px; height: 200px; border:solid 1px"> 
-    <table class="table">
-    <thead class="thead-dark">
+        <div class="container">
+    <div style="overflow: auto; width: 100%; height: 300px; border:solid 1px">
+        <table class="table table-sm table-striped">
         <tr>    
             <th>Patrimônio</th>
             <th>Processador</th>
@@ -95,32 +98,45 @@
         }?>
         </table>
         </div>
-
-        <div class="container col-md-8">
+        </div>
+        <br>
+        <div class="text-center">
+        <div class="container">
+        
             <h1>Cadastrar nova Máquina</h1>
+            </div>
             <form id="frmNovoEstagiario" nome="frmNovoEstagiario" method="POST" action="maquina.php">
-                <div class="form-group">
-                        <label for = "lblPatrimonio">Patrimônio</label>
-                        <input class="form-control col-md-6" type="text" 
+                <div class="container">
+                        <label class="text-center col-md-2" for = "lblPatrimonio">Patrimônio</label>
+                        <input class="text-center col-md-6" type="text" 
                                name = "txtPatrimonio" placeholder="Informe o patrimônio da máquina">
-                        <label for = "lblProcessador">Processador</label>
-                        <input class="form-control col-md-6" type="text" 
+                               <br>
+                        <label class="col-md-2" for = "lblProcessador">Processador</label>
+                        <input class="text-center col-sm-6" type="text" 
                                name = "txtProcessador" placeholder="Informe o processador da máquina">
-                        <label for = "lblMemRam">Memória RAM</label>
-                        <input class="form-control col-md-6" type="text" 
+                               <br>
+                        <label class="text-center col-md-2" for = "lblMemRam">Memória RAM</label>
+                        <input class="text-center col-md-6" type="text" 
                                name = "txtMemRam" placeholder="Informe a memória RAM da máquina">
-                        <label for = "lblHd">HD</label>
-                        <input class="form-control col-md-6" type="text" 
+                               <br>
+                        <label class="text-center col-md-2" for = "lblHd">HD</label>
+                        <input class="text-center col-md-6" type="text" 
                                name = "txtHd" placeholder="Informe o tamanho do HD da máquina">
-                        <label for = "lblMac">MAC</label>
-                        <input class="form-control col-md-6" type="text" 
+                               <br>
+                        <label class="text-center col-md-2" for = "lblMac">MAC</label>
+                        <input class="text-center col-md-6" type="text" 
                                name = "txtMac" placeholder="Informe o MAC da máquina">
+                               <br>
                 </div>
+                <div class="text-center">
                 <input type="submit" id="btEnviar" name ="btEnviar" 
                        class="btn btn-success" value="Gravar">
+
                 <input type="reset" id="btLimpar" name ="btLimpar" 
                        class="btn btn-warning" value="Limpar">
+                       </div>
             </form>
+        </div>
         </div>
 
 </body>

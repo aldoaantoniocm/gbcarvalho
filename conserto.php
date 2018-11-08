@@ -1,15 +1,9 @@
 <?php
-    $conexao = mysqli_connect("localhost","wadoryu","57641971");
-    if (!$conexao){
-        echo "Erro ao se conectar ao MySQL <br/>";
-        exit;
-    }
-    $nome_banco = "manutencao";
-    $banco = mysqli_select_db($conexao,$nome_banco);
-    if (!$banco){
-        echo "Erro ao se conectar ao banco manutencao...";
-        exit;
-    }
+
+    require_once('confirmaAcesso.php');
+    require_once('conexao.php');
+    confAccess();
+
     if(isset($_POST['btFinal'])){
         $dataSaida = date('Y-m-d');
         $sql_DataSai = "UPDATE conserto SET data_saida = '{$dataSaida}' WHERE id = {$_POST['consertoFinal']};";
@@ -17,7 +11,6 @@
     }
 
     if(!empty($_POST['cbMaquina']) && !empty($_POST['cbLocal']) && !empty($_POST['cbEstagiario']) && !empty($_POST['txtDefeito'])){
-        echo "Entrei no insert...";
             $dataEntrada = date('Y-m-d');
             $sql_insert = "INSERT INTO conserto (patri_maq, local, est_resp, data_entrada, data_saida, defeito, reparo) 
             VALUES ('{$_POST['cbMaquina']}', '{$_POST['cbLocal']}', '{$_POST['cbEstagiario']}',
@@ -45,16 +38,15 @@
     $comboLocal = "SELECT * FROM local;";
     $sql_comboLocal = mysqli_query($conexao, $comboLocal);
 
-    $comboEstagiario = "SELECT * FROM estagiario WHERE status = 0;";
+    $comboEstagiario = "SELECT * FROM estagiario WHERE status = 1;";
     $sql_comboEstagiario = mysqli_query($conexao, $comboEstagiario);
 
-    $select = "SELECT c.id, c.patri_maq, c.data_entrada, c.defeito, c.reparo, e.nome, l.predio
+    $select = "SELECT c.id, c.patri_maq, c.local, c.est_resp, c.data_entrada, c.defeito, c.reparo, e.nome, l.predio
                 FROM conserto c
                 INNER JOIN estagiario e on c.est_resp = e.id
                 INNER JOIN local l on c.local = l.id
         WHERE c.data_saida is NULL ORDER BY c.data_entrada;";
 
-        //"SELECT * FROM conserto WHERE data_saida is NULL;"
         
     $rs = mysqli_query($conexao, $select);
     
@@ -81,9 +73,19 @@
     <script src="main.js"></script>
 </head>
 <body>
+<div class="text-center">
     <h1>Máquinas em Manutenção<h1>
-        <br>
-        <input type="button" id="btAd" name ="btGenLoc" 
+</div>
+
+    <div class="text-center">
+    <div class="container">
+    <form class=text-left method=POST action=index.php>
+        <input type="button" id="btAd" name ="btFechar" 
+               class="btn btn-danger" value="Fechar"
+               onclick="javascript:location.href='logout.php'">
+    </form>
+</div>
+        <input type="button" id="b1tAd" name ="btGenLoc" 
                class="btn btn-primary" value="Gerenciar Locais"
                onclick="javascript:location.href='local.php'">
         <input type="button" id="btAd" name ="btGenEst" 
@@ -96,16 +98,18 @@
         <input type="button" id="btAd" name ="btRelatorio" 
                class="btn btn-primary" value="Relatórios"
                onclick="javascript:location.href='historico.php'">
+        </div>
         <br><br>
+        <div class="container">
     <div style="overflow: auto; width: 100%; height: 400px; border:solid 1px">
-        <table class="table">
-        <thead class="thead-dark">
+        <table class="table table-sm table-striped">
+        
             <tr>    
                 <th>ID</th>
                 <th>Patrimônio</th>
                 <th>Local</th>
                 <th>Estagiário</th>
-                <th>Data de entrada</th>
+                <th>Entrada</th>
                 <th>Defeito</th>
                 <th colspan=9>Reparo</th>
             </tr>
@@ -119,10 +123,6 @@
                         <td><?php echo inverteData($linha['data_entrada']) ?></td>
                         <td><?php echo $linha['defeito'] ?></td>
                         <td><?php echo $linha['reparo'] ?></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
                         <td>
                             <form method=POST action=conserto.php>
                                 <input type="hidden" name="consertoFinal" value="<?php echo $linha['id']; ?>">
@@ -159,39 +159,39 @@
             <h1>Cadastrar máquina para conserto</h1>
             <form id="frmNovoEstagiario" nome="frmNovoEstagiario" method="POST" action="conserto.php">
             <div class="form-group">
-                        <label for = "lblpatrimonio">Patrimônio</label>
-                        <select name="cbMaquina" class="form-control col-md-6">
-                            
+                        <label class="col-md-2" for = "lblpatrimonio">Patrimônio</label>
+                        <select name="cbMaquina" class="text-center col-md-7">
+                            <option></option>
                             <?php while($dado = mysqli_fetch_assoc($sql_comboMaquina)){ ?>
                                 <option value="<?php echo $dado['patrimonio'];?>"><?php echo $dado['patrimonio']; ?></option>
                             <?php }?>
                         </select>
-                        <label for = "lblLocal">Local</label>
                         <br>
-                        <select name="cbLocal" class="form-control col-md-6">
-                            
+                        <label class="col-md-2" for = "lblLocal">Local</label>
+                        <select name="cbLocal" class="text-center col-md-7">
+                                <option></option>
                             <?php while($dado = mysqli_fetch_assoc($sql_comboLocal)){ ?>
                                 <option value="<?php echo $dado['id'];?>"><?php echo $dado['predio']; ?></option>
                             <?php }?>
                         </select>
-                        
-                        <label for = "lblEstagiario">Estagiário</label>
                         <br>
-                        <select name="cbEstagiario" class="form-control col-md-6">
-                            
+                        <label class="col-md-2" for = "lblEstagiario">Estagiário</label>
+                        <select name="cbEstagiario" class="text-center col-md-7">
+                                <option></option>
                             <?php while($dado = mysqli_fetch_assoc($sql_comboEstagiario)){ ?>
                                 <option value="<?php echo $dado['id'];?>"><?php echo $dado['nome']; ?></option>
                             <?php }?>
                         </select>
                             <div class="form-group">
-                        <label for = "lblDefeito">Defeito</label>
-                        <input class="form-control col-md-6" type="text" 
+                        <label class="col-md-2" for = "lblDefeito">Defeito</label>
+                        <input class="text-center col-md-7" type="text" 
                                name = "txtDefeito" placeholder="Informe o defeito da máquina">
                             <div class="form-group">
-                        <label for = "lblReparo">Reparo</label>
-                        <input class="form-control col-md-6" type="text" 
+                        <label class="col-md-2" for = "lblReparo">Reparo</label>
+                        <input class="text-center col-md-7" type="text" 
                                name = "txtReparo" placeholder="Informe o reparo realizado">
                 </div>
+                <div class="text-center col-md-10">
                 <input type="submit" id="btEnviar" name ="btEnviar" 
                        class="btn btn-success" value="Gravar">
                 <input type="reset" id="btLimpar" name ="btLimpar" 
@@ -202,7 +202,7 @@
 </html>
 
 <?php 
-
+/*
 $_POST['cbMaquina'] = "";
 $_POST['cbLocal'] = "";
 $_POST['cbEstagiario'] = "";
@@ -214,5 +214,5 @@ echo $_POST['cbLocal'];// = "";
 echo $_POST['cbEstagiario'];// = "";
 echo $_POST['txtDefeito'];// = "";
 echo $_POST['txtConserto'];// = "";
-
+*/
 ?>

@@ -1,3 +1,10 @@
+<?php 
+
+    require_once('confirmaAcesso.php');
+    confAccess();
+
+?>
+
 <html>
     <head>
         <meta charset="utf-8" />
@@ -9,29 +16,36 @@
         <script src="main.js"></script>
     </head>
     <body>
+    <div class="text-center">
         <div class="container col-md-8">
             <h1>Editar Cadastro da Máquina</h1>
             <form id="frmNovoEstagiario" nome="frmNovoEstagiario" method="POST" action="maquina.php">
+                <div class="text-center">
                 <div class="form-group">
                     <?php
                     echo "<input type='hidden' name='upPatrimonio' value='{$_POST['patrimonio']}'>";
                     ?>
-                        <label for = "lblProcessador">Processador</label>
+                        <label class='col-md-2' for = "lblProcessador">Processador</label>
                     <?php
-                         echo "<input class='form-control col-md-6' type='text' name='txtUpProcessador' value='{$_POST['processador']}'>";
+                         echo "<input class='col-md-6' type='text' name='txtUpProcessador' value='{$_POST['processador']}'>";
                     ?>
-                        <label for = "lblMemRam">Memória RAM</label>
+                    <br>
+                        <label class='col-md-2' for = "lblMemRam">Memória RAM</label>
                     <?php
-                         echo "<input class='form-control col-md-6' type='text' name='txtUpMemRam' value='{$_POST['mem_ram']}'>";
+                         echo "<input class='col-md-6' type='text' name='txtUpMemRam' value='{$_POST['mem_ram']}'>";
                     ?>
-                        <label for = "lblHd">HD</label>
+                    <br>
+                        <label class='col-md-2' for = "lblHd">HD</label>
                     <?php
-                         echo "<input class='form-control col-md-6' type='text' name='txtUpHd'value='{$_POST['hd']}'>";
+                         echo "<input class='col-md-6' type='text' name='txtUpHd'value='{$_POST['hd']}'>";
                     ?>
-                        <label for = "lblMac">MAC</label>
+                    <br>
+                        <label class='col-md-2' for = "lblMac">MAC</label>
                     <?php
-                         echo "<input class='form-control col-md-6' type='text' name='txtUpMac' value='{$_POST['mac']}'>";
+                         echo "<input class='col-md-6' type='text' name='txtUpMac' value='{$_POST['mac']}'>";
                     ?>
+                    <br>
+                    </div>
                 </div>
                 <input type="submit" id="btEnviar" name ="btEnviar" 
                        class="btn btn-success" value="Gravar"
@@ -42,6 +56,7 @@
                        class="btn btn-danger" value="Cancelar"
                        onclick="javascript:location.href='maquina.php'">
             </form>
+        </div>
         </div>
     </body>
 </html>

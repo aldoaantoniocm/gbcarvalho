@@ -1,3 +1,9 @@
+<?php 
+
+    require_once('confirmaAcesso.php');
+    confAccess();
+
+?>
 <html>
     <head>
         <meta charset="utf-8" />
@@ -9,14 +15,17 @@
         <script src="main.js"></script>
     </head>
     <body>
+    <div class="text-center">
         <div class="container col-md-8">
             <h1>Editar Cadastro do estagiário</h1>
-            <form id="frmNovoEstagiario" nome="frmNovoEstagiario" method="POST" action="estagiario.php">
-                <div class="form-group">
+            <form  id="frmNovoEstagiario" nome="frmNovoEstagiario" method="POST" action="estagiario.php">
+        <div class="text-center">
+            <label  for = "lblNome">Nome</label>
                         <?php
-                            echo "<input class='form-control col-md-6' type='text' name='txtUpNome' value='{$_POST['nome']}'>";
+                            echo "<input class='col-md-5' type='text' name='txtUpNome' value='{$_POST['nome']}'>";
                             echo "<input type='hidden' name='upId' value='{$_POST['id']}'>";
                         ?>
+                </div>
                 </div>
                 <input type="submit" id="btEnviar" name ="btEnviar" 
                        class="btn btn-success" value="Gravar">
@@ -27,6 +36,7 @@
                        class="btn btn-danger" value="Cancelar"
                        onclick="javascript:location.href='estagiario.php'">
             </form>
+        </div>
         </div>
     </body>
 </html>
